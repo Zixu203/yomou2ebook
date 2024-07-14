@@ -36,7 +36,8 @@ mkdir $TMP_DIR
 pushd $TMP_DIR > /dev/null
 
 # Load main page
-wget -q $MAIN_URL -O main_page.html
+echo $MAIN_URL
+wget -q $MAIN_URL -U "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36" -O main_page.html
 sleep $SLEEP_TIME
 # <p class="nover_title">XXX</p>
 NOVEL_TITLE=`pcregrep -Mo '(?s)<p class=\"novel_title\">.*?</p>' main_page.html | sed -E 's/<[^>]*>//g'`
@@ -68,7 +69,7 @@ echo "" >> $TXT_OUT
 echo "" >> $TXT_OUT
 
 for chapter_page in $CHAPTER_LIST; do
-    wget -q $MAIN_URL/$chapter_page -O $chapter_page.html
+    wget -q $MAIN_URL/$chapter_page -U "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36" -O $chapter_page.html
     sleep $SLEEP_TIME
     # <p class="novel_subtitle">XXX</p>
     chapter_title=`pcregrep -Mo '(?s)<p class=\"novel_subtitle\">.*?</p>' $chapter_page.html | sed -E 's/<[^>]*>//g'`
@@ -85,7 +86,7 @@ for chapter_page in $CHAPTER_LIST; do
             line_id=`echo $paragraph | sed -E 's/^.*<p id=\"([^"]*)\">.*$/\1/g'`
             image_path=`echo $image | sed -E 's/^.*src=\"([^"]*)\".*$/\1/g'`
             image_name=`echo $image | sed -E 's/^.*alt=\"([^"]*)\".*$/\1/g'`
-            wget -q http:$image_path -O ${chapter_page}_${line_id}.jpg
+            wget -q http:$image_path -O ${chapter_page}_${line_id}.jpg -U "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
             sleep $SLEEP_TIME
             paragraph=`echo $paragraph | sed -E 's/<img [^>]*>/!['"$image_name"']('"${chapter_page}_${line_id}.jpg"')/g'`
         fi
